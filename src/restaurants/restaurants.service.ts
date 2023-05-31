@@ -33,9 +33,24 @@ export class RestaurantsService {
 
   // UPDATE Restaurant By Id => UPDATE /api/restaurant/id
   async updateById(id: string, restaurant: Restaurant): Promise<Restaurant> {
+    const response = await this.restaurantModel.findById(id);
+    if (!response) {
+      throw new NotFoundException('Restaurant not found');
+    }
     return await this.restaurantModel.findByIdAndUpdate(id, restaurant, {
       new: true,
       runValidators: true,
     });
+  }
+
+  //DELETE Restaurant By Id => DELETE /api/restaurant/id
+  async deleteById(id: string): Promise<string> {
+    const response = await this.restaurantModel.findById(id);
+    if (!response) {
+      throw new NotFoundException(
+        "The Restaurant you want to delete doesn't exit",
+      );
+    }
+    return await this.restaurantModel.findByIdAndDelete(id);
   }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { Restaurant } from '../restaurants/schemas/restaurants.schema';
 import { RestaurantDto } from 'src/dto/restaurant.dto';
@@ -36,5 +44,16 @@ export class RestaurantsController {
     restaurant: RestaurantDto,
   ): Promise<Restaurant> {
     return this.restaurantsService.updateById(id, restaurant);
+  }
+
+  @Delete('delete/:id')
+  async deleteRestaurantById(
+    @Param('id')
+    id: string,
+  ): Promise<{ deleted: boolean }> {
+    const response = await this.restaurantsService.deleteById(id);
+    if (response) {
+      return { deleted: true };
+    }
   }
 }
