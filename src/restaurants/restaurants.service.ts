@@ -10,9 +10,15 @@ export class RestaurantsService {
     private restaurantModel: mongoose.Model<Restaurant>,
   ) {}
 
-  // GET all Restaurant => GET restaurants
+  // GET all Restaurant => GET /api/restaurants/all
   async findAll(): Promise<Restaurant[]> {
     const restaurants = await this.restaurantModel.find();
     return restaurants;
+  }
+
+  // Create a new Restaurant => POST /api/restaurants
+  async create(restaurant: Restaurant): Promise<Restaurant> {
+    const response = await this.restaurantModel.create(restaurant);
+    return response;
   }
 }
