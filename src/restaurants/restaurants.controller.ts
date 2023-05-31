@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
-import { Restaurant } from './schemas/restaurants.schema';
+import { Restaurant } from '../restaurants/schemas/restaurants.schema';
 
-@Controller('/api/restuarants/')
+@Controller('/api/restaurants/')
 export class RestaurantsController {
   constructor(private restaurantsService: RestaurantsService) {}
 

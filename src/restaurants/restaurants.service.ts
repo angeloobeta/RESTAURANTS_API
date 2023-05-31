@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel, MongooseModule } from '@nestjs/mongoose';
-import { Restaurant } from './schemas/restaurants.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Restaurant } from '../restaurants/schemas/restaurants.schema';
 import * as mongoose from 'mongoose';
 
 @Injectable()
 export class RestaurantsService {
   constructor(
     @InjectModel(Restaurant.name)
-    private restaurantModel = mongoose.Model<Restaurant>,
+    private restaurantModel: mongoose.Model<Restaurant>,
   ) {}
 
   // GET all Restaurant => GET restaurants
