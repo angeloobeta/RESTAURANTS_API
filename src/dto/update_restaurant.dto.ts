@@ -1,29 +1,29 @@
 import {
   IsEmail,
   IsEnum,
-  IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
 import { Category } from 'src/restaurants/schemas/restaurants.schema';
 
 export class UpdateRestaurantDto {
-  @IsNotEmpty()
   @IsString()
+  @IsOptional()
   readonly name: string;
-  @IsNotEmpty()
   @IsString()
+  @IsOptional()
   readonly description: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsEmail({}, { message: 'Please enter a valid phone number' })
   readonly email: string;
-  @IsNotEmpty()
   @IsPhoneNumber()
+  @IsOptional()
   readonly phoneNumber: number;
-  @IsNotEmpty()
   @IsString()
+  @IsOptional()
   readonly address: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Category, { message: 'Please select a correct category to update' })
   readonly category: Category;
 }
