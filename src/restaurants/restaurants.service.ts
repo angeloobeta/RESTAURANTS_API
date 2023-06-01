@@ -8,6 +8,8 @@ import { Restaurant } from '../restaurants/schemas/restaurants.schema';
 import * as mongoose from 'mongoose';
 import { Query } from 'express-serve-static-core';
 import ApiFeatures from 'src/utils/api_features.utils';
+import { CreateRestaurantDto } from 'src/dto/create_restaurant.dto';
+import { UpdateRestaurantDto } from 'src/dto/update_restaurant.dto';
 
 @Injectable()
 export class RestaurantsService {
@@ -39,14 +41,16 @@ export class RestaurantsService {
   }
 
   // Create a new Restaurant => POST /api/restaurants/create
-  async create(restaurant: Restaurant): Promise<Restaurant> {
+  async create(restaurant: CreateRestaurantDto): Promise<Restaurant> {
     // generate the geolocation of the address and save it
     const location = await ApiFeatures.getRestaurantLocation(
       restaurant.address,
     );
     console.log(location);
-    const response = await this.restaurantModel.create(restaurant);
-    return response;
+
+    const data = Object.assign(restaurant, { location });
+
+    return await this.restaurantModel.create(data);
   }
 
   // GET Restaurant By Id => GET /api/restaurants/id
@@ -63,7 +67,10 @@ export class RestaurantsService {
   }
 
   // UPDATE Restaurant By Id => UPDATE /api/restaurant/id
-  async updateById(id: string, restaurant: Restaurant): Promise<Restaurant> {
+  async updateById(
+    id: string,
+    restaurant: UpdateRestaurantDto,
+  ): Promise<Restaurant> {
     const isValidId = mongoose.isValidObjectId(id);
     if (!isValidId) {
       throw new BadRequestException('Invalid mongooes Id, Please a correct Id');
@@ -72,7 +79,7 @@ export class RestaurantsService {
     if (!response) {
       throw new NotFoundException('Restaurant not found');
     }
-    return await this.restaurantModel.findByIdAndUpdate(id, restaurant, {
+    return this.restaurantModel.findByIdAndUpdate(id, restaurant, {
       new: true,
       runValidators: true,
     });
@@ -90,6 +97,6 @@ export class RestaurantsService {
         "The Restaurant you want to delete doesn't exit",
       );
     }
-    return await this.restaurantModel.findByIdAndDelete(id);
+    return this.restaurantModel.findByIdAndDelete(id);
   }
 }

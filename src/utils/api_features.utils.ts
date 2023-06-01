@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nodeGeoCoder = require('node-geocoder');
+import { Location } from '../restaurants/schemas/restaurants.schema';
 
 export default class ApiFeatures {
   static async getRestaurantLocation(address) {
@@ -15,9 +16,9 @@ export default class ApiFeatures {
 
       const loc = await geoCoder.geocode(address);
 
-      const location = {
+      const location: Location = {
         type: 'Point',
-        coordinate: [loc[0].longitude, loc[0].latitude],
+        coordinates: [loc[0].longitude, loc[0].latitude],
         formattedAddress: loc[0].formattedAddress,
         city: loc[0].city,
         state: loc[0].stateCode,
