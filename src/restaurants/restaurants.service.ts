@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Restaurant } from '../restaurants/schemas/restaurants.schema';
 import * as mongoose from 'mongoose';
@@ -41,6 +45,10 @@ export class RestaurantsService {
 
   // GET Restaurant By Id => GET /api/restaurants/id
   async findById(restaurantId: string): Promise<Restaurant> {
+    const isValidId = mongoose.isValidObjectId(restaurantId);
+    if (!isValidId) {
+      throw new BadRequestException('Invalid mongooes Id, Please a correct Id');
+    }
     const response = await this.restaurantModel.findById(restaurantId);
     if (!response) {
       throw new NotFoundException('Restaurant not found');
@@ -50,6 +58,10 @@ export class RestaurantsService {
 
   // UPDATE Restaurant By Id => UPDATE /api/restaurant/id
   async updateById(id: string, restaurant: Restaurant): Promise<Restaurant> {
+    const isValidId = mongoose.isValidObjectId(id);
+    if (!isValidId) {
+      throw new BadRequestException('Invalid mongooes Id, Please a correct Id');
+    }
     const response = await this.restaurantModel.findById(id);
     if (!response) {
       throw new NotFoundException('Restaurant not found');
@@ -62,6 +74,10 @@ export class RestaurantsService {
 
   //DELETE Restaurant By Id => DELETE /api/restaurant/id
   async deleteById(id: string): Promise<string> {
+    const isValidId = mongoose.isValidObjectId(id);
+    if (!isValidId) {
+      throw new BadRequestException('Invalid mongooes Id, Please a correct Id');
+    }
     const response = await this.restaurantModel.findById(id);
     if (!response) {
       throw new NotFoundException(
