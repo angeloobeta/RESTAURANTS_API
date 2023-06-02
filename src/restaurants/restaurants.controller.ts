@@ -13,8 +13,8 @@ import {
 } from '@nestjs/common';
 import { RestaurantsService } from './restaurants.service';
 import { Restaurant } from './schemas/restaurants.schema';
-import { CreateRestaurantDto } from '../dto/create_restaurant.dto';
-import { UpdateRestaurantDto } from '../dto/update_restaurant.dto';
+import { CreateRestaurantDto } from './dto/create_restaurant.dto';
+import { UpdateRestaurantDto } from './dto/update_restaurant.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('restaurants/')

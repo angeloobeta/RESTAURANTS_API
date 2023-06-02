@@ -5,7 +5,7 @@ import {
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
-import { Category } from '../restaurants/schemas/restaurants.schema';
+import { Category } from '../schemas/restaurants.schema';
 
 export class CreateRestaurantDto {
   @IsNotEmpty()
