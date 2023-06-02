@@ -49,6 +49,8 @@ export class RestaurantsController {
     const response = await this.restaurantsService.deleteById(id);
     if (response) {
       return { deleted: true };
+    } else {
+      return { deleted: false };
     }
   }
 

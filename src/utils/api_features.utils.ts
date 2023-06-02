@@ -33,8 +33,39 @@ export default class ApiFeatures {
     }
   }
 
+
+  // Delete Images from S3 Bucket
+  static deleteImages(images) {
+    // get s3 instance
+    const s3Bucket = new S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_KEY,
+    });
+
+    const imagesKey = images.map((image) => {
+      return { Key: image.key };
+    });
+
+    const param = {
+      Bucket: `${process.env.AWS_S3_BUCKET_NAME}`,
+      Delete: { Objects: imagesKey, Quiet: false },
+    };
+
+    return new Promise((resolve, reject) => {
+      s3Bucket.deleteObject(param, function (error, data) {
+        if (error) {
+          return reject(false);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  // Upload Images to S3 Bucket
   static uploadImages(files) {
     return new Promise((resolve, reject) => {
+      // get s3 instance
       const s3Bucket = new S3({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_KEY,

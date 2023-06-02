@@ -1,15 +1,11 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Restaurant } from './schemas/restaurants.schema';
-import * as mongoose from 'mongoose';
-import { Query } from 'express-serve-static-core';
-import ApiFeatures from 'src/utils/api_features.utils';
-import { CreateRestaurantDto } from 'src/dto/create_restaurant.dto';
-import { UpdateRestaurantDto } from 'src/dto/update_restaurant.dto';
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Restaurant } from "./schemas/restaurants.schema";
+import * as mongoose from "mongoose";
+import { Query } from "express-serve-static-core";
+import ApiFeatures from "src/utils/api_features.utils";
+import { CreateRestaurantDto } from "src/dto/create_restaurant.dto";
+import { UpdateRestaurantDto } from "src/dto/update_restaurant.dto";
 
 @Injectable()
 export class RestaurantsService {
@@ -97,7 +93,12 @@ export class RestaurantsService {
         "The Restaurant you want to delete doesn't exit",
       );
     }
-    return this.restaurantModel.findByIdAndDelete(id);
+    if (response.images.length == 0) {
+      return '';
+    } else {
+      const isImagesDeleted = await ApiFeatures.deleteImages(response.images);
+      if (isImagesDeleted) return this.restaurantModel.findByIdAndDelete(id);
+    }
   }
 
   // PUT
@@ -112,5 +113,11 @@ export class RestaurantsService {
         runValidators: true,
       },
     );
+  }
+
+  // DELETE
+  // delete image
+  async deleteImage(images) {
+    return ApiFeatures.deleteImages(images);
   }
 }
