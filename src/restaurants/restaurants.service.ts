@@ -99,4 +99,12 @@ export class RestaurantsService {
     }
     return this.restaurantModel.findByIdAndDelete(id);
   }
+
+  // PUT
+  //upload image
+  async uploadImage(id: string, files) {
+    const images = await ApiFeatures.uploadImages(files);
+    console.log(images);
+    return images;
+  }
 }
