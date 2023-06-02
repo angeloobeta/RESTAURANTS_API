@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Restaurant } from '../restaurants/schemas/restaurants.schema';
+import { Restaurant } from './schemas/restaurants.schema';
 import * as mongoose from 'mongoose';
 import { Query } from 'express-serve-static-core';
 import ApiFeatures from 'src/utils/api_features.utils';
@@ -20,7 +20,8 @@ export class RestaurantsService {
 
   // GET all Restaurant => GET /api/restaurants/all
   async findAll(query: Query): Promise<Restaurant[]> {
-    const resultPerPage = 5;
+    // const resultPerPage = 5;
+    const resultPerPage = null;
     const currentPage = Number(query.page) || 1;
     const skip = resultPerPage * (currentPage - 1);
 
@@ -33,11 +34,10 @@ export class RestaurantsService {
         }
       : {};
 
-    const response = await this.restaurantModel
+    return this.restaurantModel
       .find({ ...keyword })
       .limit(resultPerPage)
       .skip(skip);
-    return response;
   }
 
   // Create a new Restaurant => POST /api/restaurants/create
