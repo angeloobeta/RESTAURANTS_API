@@ -1,11 +1,15 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Restaurant } from "./schemas/restaurants.schema";
-import * as mongoose from "mongoose";
-import { Query } from "express-serve-static-core";
-import ApiFeatures from "src/utils/api_features.utils";
-import { CreateRestaurantDto } from "src/restaurants/dto/create_restaurant.dto";
-import { UpdateRestaurantDto } from "src/restaurants/dto/update_restaurant.dto";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Restaurant } from './schemas/restaurants.schema';
+import * as mongoose from 'mongoose';
+import { Query } from 'express-serve-static-core';
+import ApiFeatures from 'src/utils/api_features.utils';
+import { CreateRestaurantDto } from 'src/restaurants/dto/create_restaurant.dto';
+import { UpdateRestaurantDto } from 'src/restaurants/dto/update_restaurant.dto';
 
 @Injectable()
 export class RestaurantsService {

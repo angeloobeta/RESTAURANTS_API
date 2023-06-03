@@ -33,7 +33,6 @@ export default class ApiFeatures {
     }
   }
 
-
   // Delete Images from S3 Bucket
   static deleteImages(images) {
     // get s3 instance
@@ -52,13 +51,13 @@ export default class ApiFeatures {
     };
 
     return new Promise((resolve, reject) => {
-      s3Bucket.deleteObject(param, function (error, data) {
-        if (error) {
-          return reject(false);
-        } else {
-          resolve(true);
-        }
-      });
+      // s3Bucket.deleteObject(param, function (error, data) {
+      //   if (error) {
+      //     return reject(false);
+      //   } else {
+      //     resolve(true);
+      //   }
+      // });
     });
   }
 
@@ -84,8 +83,8 @@ export default class ApiFeatures {
           Body: file.buffer,
         };
 
-        const uploadResponse = await s3Bucket.upload(param).promise();
-        images.push(uploadResponse);
+        // const uploadResponse = await s3Bucket.upload(param).promise();
+        // images.push(uploadResponse);
 
         if (images.length == files.length) {
           resolve(images);
