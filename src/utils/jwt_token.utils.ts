@@ -1,6 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 
-export  default class JwtToken{
+export default class JwtToken {
   static async assignJwtToken(
     userId: string,
     jwtService: JwtService,
