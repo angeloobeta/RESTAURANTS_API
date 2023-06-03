@@ -6,7 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import * as process from 'process';
 
 @Module({
   imports: [
@@ -16,7 +15,9 @@ import * as process from 'process';
       useFactory: (config: ConfigService) => {
         return {
           secret: config.get<string>('JWT_SECRET '),
-          signOptions: { expiresIn: config.get<string | number>('JWT_EXPIRES ') },
+          signOptions: {
+            expiresIn: config.get<string | number>('JWT_EXPIRES '),
+          },
         };
       },
     }),
