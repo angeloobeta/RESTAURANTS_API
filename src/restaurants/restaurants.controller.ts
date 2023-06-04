@@ -26,21 +26,18 @@ export class RestaurantsController {
   constructor(private restaurantsService: RestaurantsService) {}
 
   @Get('all')
-  @UseGuards(AuthGuard())
-  async getAllRestaurant(
-    @Query() query: ExpressQuery,
-    @CurrentUser() user: User,
-  ): Promise<Restaurant[]> {
-    console.log(user);
+  async getAllRestaurant(@Query() query: ExpressQuery): Promise<Restaurant[]> {
     return this.restaurantsService.findAll(query);
   }
 
   @Post('create/')
+  @UseGuards(AuthGuard())
   async createRestaurant(
+    @CurrentUser() user: User,
     @Body()
     restaurant: CreateRestaurantDto,
   ): Promise<Restaurant> {
-    return this.restaurantsService.create(restaurant);
+    return this.restaurantsService.create(restaurant, user);
   }
 
   @Get(':id')
