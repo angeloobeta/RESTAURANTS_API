@@ -1,10 +1,11 @@
 import {
-  IsEmail, IsEmpty,
+  IsEmail,
+  IsEmpty,
   IsEnum,
   IsNotEmpty,
   IsPhoneNumber,
-  IsString
-} from "class-validator";
+  IsString,
+} from 'class-validator';
 import { Category } from '../schemas/restaurants.schema';
 import { User } from '../../auth/schemas/user.schema';
 

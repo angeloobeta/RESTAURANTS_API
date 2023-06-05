@@ -61,7 +61,7 @@ export class RestaurantsService {
   async findById(restaurantId: string): Promise<Restaurant> {
     const isValidId = mongoose.isValidObjectId(restaurantId);
     if (!isValidId) {
-      throw new BadRequestException('Invalid mongooes Id, Please a correct Id');
+      throw new BadRequestException('Invalid mongoose Id, Please a correct Id');
     }
     const response = await this.restaurantModel.findById(restaurantId);
     if (!response) {
@@ -77,7 +77,7 @@ export class RestaurantsService {
   ): Promise<Restaurant> {
     const isValidId = mongoose.isValidObjectId(id);
     if (!isValidId) {
-      throw new BadRequestException('Invalid mongooes Id, Please a correct Id');
+      throw new BadRequestException('Invalid mongoose Id, Please a correct Id');
     }
     const response = await this.restaurantModel.findById(id);
     if (!response) {
@@ -93,7 +93,7 @@ export class RestaurantsService {
   async deleteById(id: string): Promise<string> {
     const isValidId = mongoose.isValidObjectId(id);
     if (!isValidId) {
-      throw new BadRequestException('Invalid mongooes Id, Please a correct Id');
+      throw new BadRequestException('Invalid mongoose Id, Please a correct Id');
     }
     const response = await this.restaurantModel.findById(id);
     if (!response) {
