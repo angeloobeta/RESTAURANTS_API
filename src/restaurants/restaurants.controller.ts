@@ -29,14 +29,18 @@ export class RestaurantsController {
 
   @Get('all')
   @UseGuards(AuthGuard(), RolesGuard)
-  @Roles('admin')
-  async getAllRestaurant(@Query() query: ExpressQuery): Promise<Restaurant[]> {
+  @Roles('admin', 'user')
+  async getAllRestaurant(
+    @CurrentUser() user: User,
+    @Query() query: ExpressQuery,
+  ): Promise<Restaurant[]> {
+    console.log(user.email.toString());
     return this.restaurantsService.findAll(query);
   }
 
   @Post('create/')
   @UseGuards(AuthGuard(), RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'user')
   async createRestaurant(
     @CurrentUser() user: User,
     @Body()
@@ -54,13 +58,18 @@ export class RestaurantsController {
   }
 
   @Put('update/:id')
+  @UseGuards(AuthGuard())
   async updateRestaurantById(
     @Param('id')
     id: string,
     @Body()
     restaurant: UpdateRestaurantDto,
+    @CurrentUser() user: User,
   ): Promise<Restaurant> {
-    return this.restaurantsService.updateById(id, restaurant);
+    // if (response.user !== user._id.toString()) {
+    //   throw new ForbiddenException("You can't update the user");
+    // }
+    return this.restaurantsService.updateById(id, restaurant, user);
   }
 
   @Delete('delete/:id')

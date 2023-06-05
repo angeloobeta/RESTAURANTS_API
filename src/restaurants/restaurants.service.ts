@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { User } from '../auth/schemas/user.schema';
 import ApiFeatures from 'src/utils/api_features.utils';
 import { CreateRestaurantDto } from 'src/restaurants/dto/create_restaurant.dto';
 import { UpdateRestaurantDto } from 'src/restaurants/dto/update_restaurant.dto';
+import { CurrentUser } from '../auth/decorators/current_user.decorator';
 
 @Injectable()
 export class RestaurantsService {
@@ -74,12 +76,17 @@ export class RestaurantsService {
   async updateById(
     id: string,
     restaurant: UpdateRestaurantDto,
+    user: User,
   ): Promise<Restaurant> {
     const isValidId = mongoose.isValidObjectId(id);
     if (!isValidId) {
       throw new BadRequestException('Invalid mongoose Id, Please a correct Id');
     }
     const response = await this.restaurantModel.findById(id);
+    console.log(user._id.toString());
+    if (response.user._id !== user._id) {
+      throw new ForbiddenException("You can't update this restaurant");
+    }
     if (!response) {
       throw new NotFoundException('Restaurant not found');
     }
