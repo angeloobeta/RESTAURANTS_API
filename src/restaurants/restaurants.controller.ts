@@ -20,20 +20,23 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../auth/decorators/current_user.decorator';
 import { User } from '../auth/schemas/user.schema';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/guards/roles.decorator';
 
 @Controller('restaurants/')
-@UseGuards(AuthGuard())
 export class RestaurantsController {
   constructor(private restaurantsService: RestaurantsService) {}
 
   @Get('all')
-  // @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), RolesGuard)
+  @Roles('admin')
   async getAllRestaurant(@Query() query: ExpressQuery): Promise<Restaurant[]> {
     return this.restaurantsService.findAll(query);
   }
 
   @Post('create/')
-  // @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), RolesGuard)
+  @Roles('admin')
   async createRestaurant(
     @CurrentUser() user: User,
     @Body()
