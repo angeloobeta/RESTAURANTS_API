@@ -22,16 +22,18 @@ import { CurrentUser } from '../auth/decorators/current_user.decorator';
 import { User } from '../auth/schemas/user.schema';
 
 @Controller('restaurants/')
+@UseGuards(AuthGuard())
 export class RestaurantsController {
   constructor(private restaurantsService: RestaurantsService) {}
 
   @Get('all')
+  // @UseGuards(AuthGuard())
   async getAllRestaurant(@Query() query: ExpressQuery): Promise<Restaurant[]> {
     return this.restaurantsService.findAll(query);
   }
 
   @Post('create/')
-  @UseGuards(AuthGuard())
+  // @UseGuards(AuthGuard())
   async createRestaurant(
     @CurrentUser() user: User,
     @Body()
