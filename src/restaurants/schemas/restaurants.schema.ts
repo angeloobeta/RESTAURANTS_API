@@ -2,7 +2,7 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '../../auth/schemas/user.schema';
 import * as mongoose from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Location {
   @Prop({ type: String, enum: ['Point'] })
   type: string;
