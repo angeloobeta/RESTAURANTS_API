@@ -1,8 +1,8 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Restaurant } from '../../restaurants/schemas/restaurants.schema';
 import { User } from '../../auth/schemas/user.schema';
-enum Category {
+export enum Category {
   SOUPS = 'Soup',
   SALADS = 'Salads',
   SANDWICHES = 'Sandwiches',
@@ -27,3 +27,5 @@ export class Meal {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
 }
+
+export const MealSchema = SchemaFactory.createForClass(Meal);
