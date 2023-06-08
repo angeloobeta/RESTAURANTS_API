@@ -8,7 +8,7 @@ import { Meal } from './schema/meal.schema';
 import * as mongoose from 'mongoose';
 import { User } from '../auth/schemas/user.schema';
 import { Restaurant } from '../restaurants/schemas/restaurants.schema';
-import { CreateMealDto } from "./dto/create-meal.dto";
+import { CreateMealDto } from './dto/create-meal.dto';
 
 @Injectable()
 export class MealService {
@@ -20,7 +20,7 @@ export class MealService {
   ) {}
 
   // create a new meal
-  async create(meal: Meal, user: User): Promise<Meal> {
+  async create(meal: CreateMealDto, user: User): Promise<Meal> {
     const data = Object.assign(meal, { user: user._id });
 
     // saving meal Id to restaurant menu

@@ -11,7 +11,7 @@ export class MealController {
   constructor(private mealService: MealService) {}
 
   @Post('create/')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard())
   createMeal(
     @Body() createMealDto: CreateMealDto,
     @CurrentUser()
