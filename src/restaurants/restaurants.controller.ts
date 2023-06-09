@@ -38,6 +38,17 @@ export class RestaurantsController {
     return this.restaurantsService.findAll(query);
   }
 
+  // @Get('user-restaurant/')
+  // @UseGuards(AuthGuard(), RolesGuard)
+  // @Roles('admin', 'user')
+  // async getAllUserRestaurant(
+  //   @CurrentUser() user: User,
+  //   restaurant: Restaurant,
+  //   @Query() query: ExpressQuery,
+  // ): Promise<Restaurant[]> {
+  //   return this.restaurantsService.findAllUserRestaurant(query, restaurant);
+  // }
+
   @Post('create/')
   @UseGuards(AuthGuard(), RolesGuard)
   @Roles('admin', 'user')

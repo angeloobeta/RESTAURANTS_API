@@ -10,9 +10,9 @@ import * as mongoose from 'mongoose';
 import { Query } from 'express-serve-static-core';
 import { User } from '../auth/schemas/user.schema';
 import ApiFeatures from 'src/utils/api_features.utils';
-import { CreateRestaurantDto } from 'src/restaurants/dto/create_restaurant.dto';
 import { UpdateRestaurantDto } from 'src/restaurants/dto/update_restaurant.dto';
 import { CurrentUser } from '../auth/decorators/current_user.decorator';
+import { CreateRestaurantDto } from "./dto/create_restaurant.dto";
 
 @Injectable()
 export class RestaurantsService {
@@ -43,6 +43,31 @@ export class RestaurantsService {
       .skip(skip);
   }
 
+  // Get all restaurant to a particular user
+  // async findAllUserRestaurant(
+  //   query: Query,
+  //   restaurant: Restaurant,
+  // ): Promise<Restaurant[]> {
+  //   // const resultPerPage = 5;
+  //   const resultPerPage = null;
+  //   const currentPage = Number(query.page) || 1;
+  //   const skip = resultPerPage * (currentPage - 1);
+  //
+  //   const keyword = query.keyword
+  //     ? {
+  //         name: {
+  //           $regex: query.keyword,
+  //           $options: 'i',
+  //         },
+  //       }
+  //     : { user: restaurant.user };
+  //
+  //   return this.restaurantModel
+  //     .find({ ...keyword })
+  //     .limit(resultPerPage)
+  //     .skip(skip);
+  // }
+
   // Create a new Restaurant => POST /api/restaurants/create
   async create(
     restaurant: CreateRestaurantDto,
@@ -55,6 +80,16 @@ export class RestaurantsService {
     console.log(location);
 
     const data = Object.assign(restaurant, { user: user._id, location });
+    // check the name of the restaurant doesn't exit
+    const restaurantNameExist = await this.restaurantModel.findOne({
+      name: restaurant.name,
+    });
+
+    if (restaurantNameExist && user.email === restaurantNameExist.email) {
+      throw new ForbiddenException(
+        'The name of the restaurant already exist please use another name',
+      );
+    }
 
     return await this.restaurantModel.create(data);
   }
@@ -84,11 +119,12 @@ export class RestaurantsService {
     }
     const response = await this.restaurantModel.findById(id);
     console.log(user._id.toString());
-    if (response.user._id !== user._id) {
-      throw new ForbiddenException("You can't update this restaurant");
-    }
     if (!response) {
       throw new NotFoundException('Restaurant not found');
+    }
+    console.log(response.user);
+    if (response.user !== user._id) {
+      throw new ForbiddenException("You can't update this restaurant");
     }
     return this.restaurantModel.findByIdAndUpdate(id, restaurant, {
       new: true,

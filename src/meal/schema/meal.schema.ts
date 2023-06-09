@@ -4,8 +4,8 @@ import { Restaurant } from '../../restaurants/schemas/restaurants.schema';
 import { User } from '../../auth/schemas/user.schema';
 export enum Category {
   SOUPS = 'Soup',
-  SALADS = 'Salads',
-  SANDWICHES = 'Sandwiches',
+  SALADS = 'Salad',
+  SANDWICHES = 'Sandwich',
   PASTA = 'Pasta',
 }
 @Schema({ timestamps: true })

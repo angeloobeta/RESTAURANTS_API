@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { MealService } from './meal.service';
 import { CurrentUser } from '../auth/decorators/current_user.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -13,10 +13,21 @@ export class MealController {
   @Post('create/')
   @UseGuards(AuthGuard())
   createMeal(
-    @Body() createMealDto: CreateMealDto,
+    @Body() meal: Meal,
     @CurrentUser()
     user: User,
   ): Promise<Meal> {
-    return this.mealService.create(createMealDto, user);
+    return this.mealService.create(meal, user);
+  }
+
+  // Get all meals
+  @Get('all')
+  async getAllMeal(): Promise<Meal[]> {
+    return this.mealService.findAll();
+  }
+
+  @Get('meal/:id')
+  async getMealsById(@Param('id') id: string): Promise<Meal[]> {
+    return this.mealService.findMealByRestaurantId(id);
   }
 }
