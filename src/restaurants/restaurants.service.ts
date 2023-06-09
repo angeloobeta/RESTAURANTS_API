@@ -44,29 +44,27 @@ export class RestaurantsService {
   }
 
   // Get all restaurant to a particular user
-  // async findAllUserRestaurant(
-  //   query: Query,
-  //   restaurant: Restaurant,
-  // ): Promise<Restaurant[]> {
-  //   // const resultPerPage = 5;
-  //   const resultPerPage = null;
-  //   const currentPage = Number(query.page) || 1;
-  //   const skip = resultPerPage * (currentPage - 1);
-  //
-  //   const keyword = query.keyword
-  //     ? {
-  //         name: {
-  //           $regex: query.keyword,
-  //           $options: 'i',
-  //         },
-  //       }
-  //     : { user: restaurant.user };
-  //
-  //   return this.restaurantModel
-  //     .find({ ...keyword })
-  //     .limit(resultPerPage)
-  //     .skip(skip);
-  // }
+  async findAllUserRestaurant(query: Query, user: User): Promise<Restaurant[]> {
+    // const resultPerPage = 5;
+    const resultPerPage = null;
+    const currentPage = Number(query.page) || 1;
+    const skip = resultPerPage * (currentPage - 1);
+
+    const keyword = query.keyword
+      ? {
+          name: {
+            $regex: query.keyword,
+            $options: 'i',
+          },
+        }
+      : { user: user.id };
+    console.log(user.id);
+
+    return this.restaurantModel
+      .find({ ...keyword })
+      .limit(resultPerPage)
+      .skip(skip);
+  }
 
   // Create a new Restaurant => POST /api/restaurants/create
   async create(
@@ -80,9 +78,10 @@ export class RestaurantsService {
     console.log(location);
 
     const data = Object.assign(restaurant, { user: user._id, location });
-    // check the name of the restaurant doesn't exit
+    // check if name of the restaurant doesn't exit
     const restaurantNameExist = await this.restaurantModel.findOne({
       name: restaurant.name,
+      user: user.id,
     });
 
     if (restaurantNameExist && user.email === restaurantNameExist.email) {
