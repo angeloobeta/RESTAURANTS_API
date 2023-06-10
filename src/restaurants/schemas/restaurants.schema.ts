@@ -57,7 +57,7 @@ export class Restaurant {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
 
-  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Meal' }])
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Menu' }])
   menu?: Menu[];
 }
 

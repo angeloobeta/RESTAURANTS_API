@@ -17,7 +17,7 @@ import { CreateMenuDto } from './dto/create_menu_dto';
 import { Query as ExpressQuery } from 'express-serve-static-core';
 import { UpdateMenuDto } from './dto/update_menu.dto';
 
-@Controller('meals/')
+@Controller('menu/')
 export class MenuController {
   constructor(private menuService: MenuService) {}
 
@@ -50,13 +50,14 @@ export class MenuController {
 
   // Update menu
   // eslint-disable-next-line prettier/prettier
-  @Put('update/id')
+  @Put('update/:id')
   @UseGuards(AuthGuard())
   async updateMenuById(
     @Param('id')
     id: string,
     @Body()
-    menu: UpdateMenuDto,
+    menu: Menu,
+    @CurrentUser()
     user: User,
   ): Promise<Menu> {
     return this.menuService.update(id, menu, user);

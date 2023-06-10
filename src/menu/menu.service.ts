@@ -48,8 +48,10 @@ export class MenuService {
   }
 
   // create a new meal
-  async create(menu: CreateMenuDto, user: User): Promise<Menu> {
+  async create(menu: Menu, user: User): Promise<Menu> {
     const data = Object.assign(menu, { user: user._id });
+
+    // delete restaurant and all it details
 
     // saving meal Id to restaurant menu
     const restaurant = await this.restaurantModel.findById(menu.restaurant);
@@ -64,8 +66,26 @@ export class MenuService {
     // console.log(user._id.toString());
     // console.log(user.id);
     if (restaurant.user.toString() !== user._id.toString()) {
-      throw new ForbiddenException("You can't add meal to this restaurant");
+      throw new ForbiddenException("You can't add menu to this restaurant");
     }
+
+    const menuNameExist = await this.menuModel.findOne({
+      restaurant: menu.restaurant,
+      user: menu.user,
+    });
+
+    // check if the menu already exits
+    // console.log(menu.user);
+    // console.log(menuNameExist.user);
+    if (
+      menuNameExist &&
+      menu.user.toString() === menuNameExist.user.toString()
+    ) {
+      throw new ForbiddenException(
+        'The menu already exist please use another name',
+      );
+    }
+
     const menuCreated = await this.menuModel.create(data);
 
     restaurant.menu.push(menuCreated);
@@ -73,7 +93,7 @@ export class MenuService {
     return menuCreated;
   }
 
-  async update(id: string, menu: UpdateMenuDto, user: User): Promise<Menu> {
+  async update(id: string, menu: Menu, user: User): Promise<Menu> {
     const isValid = mongoose.isValidObjectId(id);
     if (!isValid) {
       throw new BadRequestException(
@@ -85,8 +105,9 @@ export class MenuService {
     if (!response) {
       throw new NotFoundException('Menu not found');
     }
-
-    if (response.user !== user.id) {
+    console.log(user.id);
+    console.log(response.user.toString());
+    if (response.user.toString() !== user.id) {
       throw new ForbiddenException("You can't update this menu");
     }
     return this.menuModel.findByIdAndUpdate(id, menu, {
