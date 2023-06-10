@@ -21,13 +21,29 @@ export class MealService {
   ) {}
 
   // Get all meals
-  async findAll(): Promise<Meal[]> {
-    return this.mealModel.find();
+  async findAll(query: Query): Promise<Meal[]> {
+    const resultPerPage = null;
+    const currentPage = Number(query.page) || 1;
+    const skip = resultPerPage * (currentPage - 1);
+
+    // search keyword
+    const keyword = query.keyword
+      ? {
+          name: { $regex: query.keyword, $options: 'i' },
+          description: { $regex: query.keyword, $options: 'i' },
+
+    }
+      : {};
+
+    return this.mealModel
+      .find({ ...keyword })
+      .limit(resultPerPage)
+      .skip(skip);
   }
 
   // Get all meals for a restaurant
   async findMealByRestaurantId(id: string): Promise<Meal[]> {
-    return this.mealModel.findById({ restaurant: id });
+    return this.mealModel.find({ restaurant: id });
   }
 
   async findMealBySearchWord(query: Query): Promise<Meal[]> {

@@ -34,7 +34,7 @@ export class RestaurantsController {
     @CurrentUser() user: User,
     @Query() query: ExpressQuery,
   ): Promise<Restaurant[]> {
-    console.log(user.email.toString());
+    // console.log(user.email.toString());
     return this.restaurantsService.findAll(query);
   }
 
