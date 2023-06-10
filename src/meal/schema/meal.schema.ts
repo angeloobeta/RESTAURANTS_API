@@ -9,7 +9,7 @@ export enum Category {
   PASTA = 'Pasta',
 }
 @Schema({ timestamps: true })
-export class Meal {
+export class Menu {
   @Prop()
   name: string;
 
@@ -29,4 +29,4 @@ export class Meal {
   user: User;
 }
 
-export const MealSchema = SchemaFactory.createForClass(Meal);
+export const MealSchema = SchemaFactory.createForClass(Menu);

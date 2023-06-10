@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MealController } from './meal.controller';
-import { MealService } from './meal.service';
+import { MenuController } from './menu.controller';
+import { MenuService } from './menu.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MealSchema } from './schema/meal.schema';
 import { AuthModule } from '../auth/auth.module';
@@ -12,7 +12,7 @@ import { RestaurantsModule } from '../restaurants/restaurants.module';
     MongooseModule.forFeature([{ name: 'Meal', schema: MealSchema }]),
     RestaurantsModule,
   ],
-  controllers: [MealController],
-  providers: [MealService],
+  controllers: [MenuController],
+  providers: [MenuService],
 })
 export class MealModule {}

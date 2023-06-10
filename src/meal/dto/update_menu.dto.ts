@@ -2,7 +2,7 @@ import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { User } from '../../auth/schemas/user.schema';
 import { Category } from '../schema/meal.schema';
 
-export class CreateMealDto {
+export class UpdateMenuDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;

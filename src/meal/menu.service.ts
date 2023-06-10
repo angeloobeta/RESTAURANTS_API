@@ -4,24 +4,24 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Meal } from './schema/meal.schema';
+import { Menu } from './schema/meal.schema';
 import * as mongoose from 'mongoose';
 import { User } from '../auth/schemas/user.schema';
 import { Restaurant } from '../restaurants/schemas/restaurants.schema';
-import { CreateMealDto } from './dto/create-meal.dto';
+import { CreateMenuDto } from './dto/create_menu_dto';
 import { Query } from 'express-serve-static-core';
 
 @Injectable()
-export class MealService {
+export class MenuService {
   constructor(
-    @InjectModel(Meal.name)
-    private mealModel: mongoose.Model<Meal>,
+    @InjectModel(Menu.name)
+    private menuModel: mongoose.Model<Menu>,
     @InjectModel(Restaurant.name)
     private restaurantModel: mongoose.Model<Restaurant>,
   ) {}
 
   // Get all meals
-  async findAll(query: Query): Promise<Meal[]> {
+  async findAll(query: Query): Promise<Menu[]> {
     const resultPerPage = null;
     const currentPage = Number(query.page) || 1;
     const skip = resultPerPage * (currentPage - 1);
@@ -31,45 +31,26 @@ export class MealService {
       ? {
           name: { $regex: query.keyword, $options: 'i' },
           description: { $regex: query.keyword, $options: 'i' },
-
-    }
+        }
       : {};
 
-    return this.mealModel
+    return this.menuModel
       .find({ ...keyword })
       .limit(resultPerPage)
       .skip(skip);
   }
 
   // Get all meals for a restaurant
-  async findMealByRestaurantId(id: string): Promise<Meal[]> {
-    return this.mealModel.find({ restaurant: id });
-  }
-
-  async findMealBySearchWord(query: Query): Promise<Meal[]> {
-    const resultPerPage = null;
-    const currentPage = Number(query.page) || 1;
-    const skip = resultPerPage * (currentPage - 1);
-
-    const keyword = query.keyword
-      ? {
-          name: { $regex: query.keyword, $options: 'i' },
-          description: { $regex: query.keyword, $options: 'i' },
-        }
-      : {};
-
-    return this.mealModel
-      .find({ ...keyword })
-      .limit(resultPerPage)
-      .skip(skip);
+  async findMealByRestaurantId(id: string): Promise<Menu[]> {
+    return this.menuModel.find({ restaurant: id });
   }
 
   // create a new meal
-  async create(meal: CreateMealDto, user: User): Promise<Meal> {
-    const data = Object.assign(meal, { user: user._id });
+  async create(menu: CreateMenuDto, user: User): Promise<Menu> {
+    const data = Object.assign(menu, { user: user._id });
 
     // saving meal Id to restaurant menu
-    const restaurant = await this.restaurantModel.findById(meal.restaurant);
+    const restaurant = await this.restaurantModel.findById(menu.restaurant);
 
     if (!restaurant) {
       throw new NotFoundException('Restaurant not found by this Id');
@@ -83,10 +64,10 @@ export class MealService {
     if (restaurant.user.toString() !== user._id.toString()) {
       throw new ForbiddenException("You can't add meal to this restaurant");
     }
-    const mealCreated = await this.mealModel.create(data);
+    const menuCreated = await this.menuModel.create(data);
 
-    restaurant.menu.push(mealCreated);
+    restaurant.menu.push(menuCreated);
     restaurant.save();
-    return mealCreated;
+    return menuCreated;
   }
 }
