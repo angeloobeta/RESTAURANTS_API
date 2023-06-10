@@ -12,7 +12,7 @@ import { User } from '../auth/schemas/user.schema';
 import ApiFeatures from 'src/utils/api_features.utils';
 import { UpdateRestaurantDto } from 'src/restaurants/dto/update_restaurant.dto';
 import { CurrentUser } from '../auth/decorators/current_user.decorator';
-import { CreateRestaurantDto } from "./dto/create_restaurant.dto";
+import { CreateRestaurantDto } from './dto/create_restaurant.dto';
 
 @Injectable()
 export class RestaurantsService {

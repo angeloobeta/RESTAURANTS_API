@@ -1,7 +1,7 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '../../auth/schemas/user.schema';
 import * as mongoose from 'mongoose';
-import { Menu } from '../../meal/schema/meal.schema';
+import { Menu } from '../../menu/schema/menu.schema';
 
 @Schema({ timestamps: true })
 export class Location {
@@ -28,7 +28,7 @@ export enum Category {
   FINE_DINNING = 'Fine dinning',
 }
 
-@Schema()
+@Schema({ timestamps: true })
 export class Restaurant {
   @Prop()
   name: string;

@@ -15,8 +15,8 @@ import { AuthModule } from '../auth/auth.module';
       },
     ]),
   ],
-  providers: [RestaurantsService],
   controllers: [RestaurantsController],
+  providers: [RestaurantsService],
   exports: [MongooseModule],
 })
 export class RestaurantsModule {}

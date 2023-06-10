@@ -1,8 +1,8 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { User } from '../../auth/schemas/user.schema';
-import { Category } from '../schema/meal.schema';
+import { Category } from '../schema/menu.schema';
 
-export class UpdateMenuDto {
+export class CreateMenuDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;

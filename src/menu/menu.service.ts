@@ -2,16 +2,16 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
-  NotFoundException
-} from "@nestjs/common";
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Menu } from './schema/meal.schema';
+import { Menu } from './schema/menu.schema';
 import * as mongoose from 'mongoose';
 import { User } from '../auth/schemas/user.schema';
 import { Restaurant } from '../restaurants/schemas/restaurants.schema';
 import { CreateMenuDto } from './dto/create_menu_dto';
 import { Query } from 'express-serve-static-core';
-import { UpdateMenuDto } from "./dto/update_menu.dto";
+import { UpdateMenuDto } from './dto/update_menu.dto';
 
 @Injectable()
 export class MenuService {

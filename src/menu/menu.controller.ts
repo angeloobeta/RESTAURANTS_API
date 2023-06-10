@@ -12,7 +12,7 @@ import { MenuService } from './menu.service';
 import { CurrentUser } from '../auth/decorators/current_user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../auth/schemas/user.schema';
-import { Menu } from './schema/meal.schema';
+import { Menu } from './schema/menu.schema';
 import { CreateMenuDto } from './dto/create_menu_dto';
 import { Query as ExpressQuery } from 'express-serve-static-core';
 import { UpdateMenuDto } from './dto/update_menu.dto';

@@ -29,4 +29,4 @@ export class Menu {
   user: User;
 }
 
-export const MealSchema = SchemaFactory.createForClass(Menu);
+export const MenuSchema = SchemaFactory.createForClass(Menu);
