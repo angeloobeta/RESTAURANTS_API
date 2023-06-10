@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { User } from '../auth/schemas/user.schema';
 import { Menu } from './schema/meal.schema';
 import { CreateMenuDto } from './dto/create_menu_dto';
 import { Query as ExpressQuery } from 'express-serve-static-core';
+import { UpdateMenuDto } from './dto/update_menu.dto';
 
 @Controller('meals/')
 export class MenuController {
@@ -22,14 +24,14 @@ export class MenuController {
   @Post('create/')
   @UseGuards(AuthGuard())
   createMenu(
-    @Body() meal: Menu,
+    @Body() menu: Menu,
     @CurrentUser()
     user: User,
   ): Promise<Menu> {
-    return this.menuService.create(meal, user);
+    return this.menuService.create(menu, user);
   }
 
-  // Get all meals
+  // Fetch all menu
   @Get('all')
   @UseGuards(AuthGuard())
   async getAllMenu(
@@ -39,11 +41,24 @@ export class MenuController {
     return this.menuService.findAll(query);
   }
 
+  // Fetch menu by restaurant id
   @Get('menu-by-restaurant/:id')
   @UseGuards(AuthGuard())
   async getMenuById(@Param('id') id: string): Promise<Menu[]> {
     return this.menuService.findMealByRestaurantId(id);
   }
 
-  // Post('update')
+  // Update menu
+  // eslint-disable-next-line prettier/prettier
+  @Put('update/id')
+  @UseGuards(AuthGuard())
+  async updateMenuById(
+    @Param('id')
+    id: string,
+    @Body()
+    menu: UpdateMenuDto,
+    user: User,
+  ): Promise<Menu> {
+    return this.menuService.update(id, menu, user);
+  }
 }

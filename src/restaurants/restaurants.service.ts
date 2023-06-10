@@ -114,7 +114,9 @@ export class RestaurantsService {
   ): Promise<Restaurant> {
     const isValidId = mongoose.isValidObjectId(id);
     if (!isValidId) {
-      throw new BadRequestException('Invalid mongoose Id, Please a correct Id');
+      throw new BadRequestException(
+        'Invalid mongoose Id, Please enter a correct Id',
+      );
     }
     const response = await this.restaurantModel.findById(id);
     console.log(user._id.toString());
