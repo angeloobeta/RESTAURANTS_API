@@ -1,13 +1,14 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Param,
   Post,
   Put,
   Query,
-  UseGuards
-} from "@nestjs/common";
+  UseGuards,
+} from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { CurrentUser } from '../auth/decorators/current_user.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -63,12 +64,12 @@ export class MenuController {
     return this.menuService.update(id, menu, user);
   }
 
-  @Delete('delete/:id')
+  @Delete('delete/:menuId')
   @UseGuards(AuthGuard())
   async deleteMenuById(
-    @Param('id')
-    id: string,
+    @Param('menuId')
+    menuId: string,
   ): Promise<{ deleted: boolean }> {
-    return this.menuService.delete(id);
+    return this.menuService.delete(menuId);
   }
 }

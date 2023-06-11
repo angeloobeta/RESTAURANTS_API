@@ -117,24 +117,32 @@ export class MenuService {
   }
 
   // Delete menu
-  async delete(id: string): Promise<{ deleted: boolean }> {
-    const isValid = mongoose.isValidObjectId(id);
+  async delete(
+    // restaurantId: string,
+    menuId: string,
+  ): Promise<{ deleted: boolean }> {
+    const isValid = mongoose.isValidObjectId(menuId);
     if (!isValid) {
       throw new BadRequestException(
         'Invalid mongoose Id, Please enter a correct Id',
       );
     }
 
-    const response = await this.menuModel.findById(id);
+    const response = await this.menuModel.findById(menuId);
     if (!response) {
       throw new NotFoundException('Menu not found');
     }
+    const deletedMenu = await this.menuModel.findByIdAndDelete(menuId);
+    const deleteResult = await this.restaurantModel
+      .findByIdAndUpdate(
+        response.restaurant,
+        { $pull: { menu: menuId } },
+        { new: true },
+      )
+      .exec();
 
-    const deletedMenu = await this.menuModel.findByIdAndDelete(id);
-    this.restaurantModel.findOne({
-      menu: id,
-    }).deleteOne;
-    if (deletedMenu) return { deleted: true };
+    // console.log(deleteResult);
+    if (deleteResult && deletedMenu) return { deleted: true };
     return { deleted: false };
   }
 }
