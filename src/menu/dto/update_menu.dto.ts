@@ -1,27 +1,33 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { User } from '../../auth/schemas/user.schema';
 import { Category } from '../schema/menu.schema';
 
 export class UpdateMenuDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   readonly name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   readonly description: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   readonly price: number;
 
-  @IsNotEmpty({ message: 'You cant provider user id' })
+  @IsOptional()
   readonly user: User;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Category, { message: 'Please select a restaurant' })
   readonly category: Category;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly restaurant: string;
 }

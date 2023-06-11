@@ -115,4 +115,26 @@ export class MenuService {
       runValidators: true,
     });
   }
+
+  // Delete menu
+  async delete(id: string): Promise<{ deleted: boolean }> {
+    const isValid = mongoose.isValidObjectId(id);
+    if (!isValid) {
+      throw new BadRequestException(
+        'Invalid mongoose Id, Please enter a correct Id',
+      );
+    }
+
+    const response = await this.menuModel.findById(id);
+    if (!response) {
+      throw new NotFoundException('Menu not found');
+    }
+
+    const deletedMenu = await this.menuModel.findByIdAndDelete(id);
+    this.restaurantModel.findOne({
+      menu: id,
+    }).deleteOne;
+    if (deletedMenu) return { deleted: true };
+    return { deleted: false };
+  }
 }
