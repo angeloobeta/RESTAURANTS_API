@@ -9,7 +9,7 @@ import { Restaurant } from './schemas/restaurants.schema';
 import * as mongoose from 'mongoose';
 import { Query } from 'express-serve-static-core';
 import { User } from '../auth/schemas/user.schema';
-import ApiFeatures from 'src/utils/api_features.utils';
+import ApiFeatures from '../utils/api_features.utils';
 import { UpdateRestaurantDto } from 'src/restaurants/dto/update_restaurant.dto';
 import { CurrentUser } from '../auth/decorators/current_user.decorator';
 import { CreateRestaurantDto } from './dto/create_restaurant.dto';

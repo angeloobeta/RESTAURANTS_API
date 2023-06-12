@@ -5,10 +5,13 @@ import { Restaurant } from './schemas/restaurants.schema';
 import { Model } from 'mongoose';
 import { UserRole } from '../auth/schemas/user.schema';
 import ApiFeatures from '../utils/api_features.utils';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 const mockRestaurantService = {
   find: jest.fn(),
   create: jest.fn(),
+  findById: jest.fn(),
+  findOne: jest.fn(),
 };
 // const mockRestaurant = {
 //   name: 'Chitis',
@@ -130,12 +133,42 @@ describe('RestaurantService', () => {
         .spyOn(ApiFeatures, 'getRestaurantLocation')
         .mockImplementationOnce(() => Promise.resolve(mockRestaurant.location));
 
-      jest
-        .spyOn(model, 'create')
-        .mockImplementationOnce(() => Promise.resolve(mockRestaurant));
+      // jest
+      //   .spyOn(model, 'create')
+      //   .mockImplementationOnce(() => Promise.resolve(mockRestaurant));
 
-      const result = service.create(newRestaurant as any, mockUser as any);
+      const result = await service.create(
+        newRestaurant as any,
+        mockUser as any,
+      );
       expect(result).toEqual(mockRestaurant);
+    });
+  });
+
+  // findById
+  describe('findById', () => {
+    it('should get restaurant by Id', async () => {
+      jest
+        .spyOn(model, 'findById')
+        .mockResolvedValueOnce(mockRestaurant as any);
+      const result = await service.findById(mockRestaurant._id);
+      expect(result).toEqual(mockRestaurant);
+    });
+
+    // check the id
+    it('should throw wrong mongoose id', async () => {
+      await expect(service.findById('wrong id')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('should throw restaurant not found error', async () => {
+      const mockError = new NotFoundException('Restaurant not found');
+      jest.spyOn(model, 'findById').mockRejectedValue(mockError);
+
+      await expect(service.findById(mockRestaurant._id)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
