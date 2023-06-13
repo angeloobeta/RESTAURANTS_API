@@ -102,7 +102,7 @@ export class RestaurantsController {
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
     // console.log(id);
-    // console.log(files);
+    console.log(files);
     await this.restaurantsService.findById(id);
     return await this.restaurantsService.uploadImage(id, files);
   }
