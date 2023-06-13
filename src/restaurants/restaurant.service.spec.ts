@@ -145,36 +145,37 @@ describe('RestaurantService', () => {
   });
 
   // updateById
-  // describe('updateById', () => {
-  //   //update the restaurant
-  //   it('should update the restaurant', async () => {
-  //     jest
-  //       .spyOn(model, 'findByIdAndUpdate')
-  //       .mockResolvedValueOnce(updateRestaurant as any);
-  //
-  //     //
-  //     const updatedRestaurant = await service.updateById(
-  //       restaurant._id,
-  //       updateRestaurant as any,
-  //       mockUser as any,
-  //     );
-  //
-  //     expect(updatedRestaurant.name).toEqual(updateRestaurant.name);
-  //   });
-  //   // check if id is valid
-  //   it('should throw wrong mongoose id', async () => {
-  //     await expect(service.findById('wrong id')).rejects.toThrow(
-  //       BadRequestException,
-  //     );
-  //   });
-  //   // check if id exist
-  //   // it('should throw restaurant not found error', async () => {
-  //   //   jest.spyOn(model, 'findById').mockRejectedValue(mockError);
-  //   //   await expect(service.findById(mockRestaurant._id)).rejects.toThrow(
-  //   //     NotFoundException,
-  //   //   );
-  //   // });
-  // });
+  describe('updateById', () => {
+    //update the restaurant
+    it('should update the restaurant', async () => {
+      jest
+        .spyOn(model, 'findByIdAndUpdate')
+        .mockResolvedValueOnce(updateRestaurant as any);
+
+      //
+      const updatedRestaurant = await service.updateById(
+        restaurant._id,
+        updateRestaurant as any,
+        mockUser as any,
+      );
+
+      expect(updatedRestaurant.name).toEqual(updateRestaurant.name);
+    });
+    // check if id is valid
+    it('should throw wrong mongoose id', async () => {
+      await expect(service.findById('wrong id')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+    // check if id exist
+    it('should throw restaurant not found error', async () => {
+      const mockError = new NotFoundException('Restaurant not found');
+      jest.spyOn(model, 'findById').mockRejectedValue(mockError);
+      await expect(service.findById(mockRestaurant._id)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
 
   // deleteById
   // describe('deleteById', () => {
@@ -183,7 +184,7 @@ describe('RestaurantService', () => {
   //       .spyOn(model, 'findByIdAndDelete')
   //       .mockResolvedValueOnce(mockRestaurant as any);
   //
-  //     const result = service.deleteById(mockRestaurant._id);
+  //     const result = await service.deleteById(mockRestaurant._id);
   //     expect(result).toEqual(mockRestaurant);
   //   });
   // });
@@ -223,6 +224,25 @@ describe('RestaurantService', () => {
 
       const result = await service.uploadImage(mockRestaurant._id, file);
       expect(result).toEqual(updateRestaurant);
+    });
+  });
+
+  // delete images
+  describe('deleteImags', () => {
+    it('should delete images from s3 bucket', async () => {
+      const mockImages = [
+        {
+          Etag: '"jkffdddfdffgggffdfddf"',
+          location:
+            'https://restaurant-api-bucket.s3.amazon.com/restaurant-images',
+          key: 'restaurant-image-1.png',
+          Key: 'restaurant-image-2.png',
+          Bucket: 'restaurant-bucket',
+        },
+      ];
+      jest.spyOn(ApiFeatures, 'deleteImages').mockResolvedValue(true);
+      const result = await service.deleteImage(mockImages);
+      expect(result).toBe(true);
     });
   });
 });
