@@ -22,7 +22,7 @@ export class RestaurantsService {
   ) {}
 
   // GET all Restaurant => GET /api/restaurants/all
-  async findAll(query: Query): Promise<Restaurant[]> {
+  async findAllRestaurant(query: Query): Promise<Restaurant[]> {
     // const resultPerPage = 5;
     const resultPerPage = null;
     const currentPage = Number(query.page) || 1;
@@ -67,7 +67,7 @@ export class RestaurantsService {
   }
 
   // Create a new Restaurant => POST /api/restaurants/create
-  async create(
+  async createRestaurant(
     restaurant: CreateRestaurantDto,
     user: User,
   ): Promise<Restaurant> {
@@ -94,7 +94,7 @@ export class RestaurantsService {
   }
 
   // GET Restaurant By Id => GET /api/restaurants/id
-  async findById(restaurantId: string): Promise<Restaurant> {
+  async findRestaurantById(restaurantId: string): Promise<Restaurant> {
     const isValidId = mongoose.isValidObjectId(restaurantId);
     if (!isValidId) {
       throw new BadRequestException('Invalid mongoose Id, Please a correct Id');
@@ -107,7 +107,7 @@ export class RestaurantsService {
   }
 
   // UPDATE Restaurant By Id => UPDATE /api/restaurant/id
-  async updateById(
+  async updateRestaurantById(
     id: string,
     restaurant: UpdateRestaurantDto,
     user: User,
@@ -134,7 +134,7 @@ export class RestaurantsService {
   }
 
   //DELETE Restaurant By Id => DELETE /api/restaurant/id
-  async deleteById(id: string): Promise<string> {
+  async deleteRestaurantById(id: string): Promise<string> {
     const isValidId = mongoose.isValidObjectId(id);
     if (!isValidId) {
       throw new BadRequestException('Invalid mongoose Id, Please a correct Id');

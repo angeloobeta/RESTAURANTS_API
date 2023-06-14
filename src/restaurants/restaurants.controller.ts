@@ -35,7 +35,7 @@ export class RestaurantsController {
     @Query() query: ExpressQuery,
   ): Promise<Restaurant[]> {
     // console.log(user.email.toString());
-    return this.restaurantsService.findAll(query);
+    return this.restaurantsService.findAllRestaurant(query);
   }
 
   @Get('user-restaurant/')
@@ -56,7 +56,7 @@ export class RestaurantsController {
     @Body()
     restaurant: CreateRestaurantDto,
   ): Promise<Restaurant> {
-    return this.restaurantsService.create(restaurant, user);
+    return this.restaurantsService.createRestaurant(restaurant, user);
   }
 
   @Get(':id')
@@ -64,7 +64,7 @@ export class RestaurantsController {
     @Param('id')
     id: string,
   ): Promise<Restaurant> {
-    return this.restaurantsService.findById(id);
+    return this.restaurantsService.findRestaurantById(id);
   }
 
   @Put('update/:id')
@@ -79,7 +79,7 @@ export class RestaurantsController {
     // if (response.user !== user._id.toString()) {
     //   throw new ForbiddenException("You can't update the user");
     // }
-    return this.restaurantsService.updateById(id, restaurant, user);
+    return this.restaurantsService.updateRestaurantById(id, restaurant, user);
   }
 
   @Delete('delete/:id')
@@ -87,7 +87,7 @@ export class RestaurantsController {
     @Param('id')
     id: string,
   ): Promise<{ deleted: boolean }> {
-    const response = await this.restaurantsService.deleteById(id);
+    const response = await this.restaurantsService.deleteRestaurantById(id);
     if (response) {
       return { deleted: true };
     } else {
@@ -103,7 +103,7 @@ export class RestaurantsController {
   ) {
     // console.log(id);
     console.log(files);
-    await this.restaurantsService.findById(id);
+    await this.restaurantsService.findRestaurantById(id);
     return await this.restaurantsService.uploadImage(id, files);
   }
 }
