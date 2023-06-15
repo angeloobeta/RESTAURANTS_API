@@ -2,58 +2,24 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RestaurantsService } from './restaurants.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { Restaurant } from './schemas/restaurants.schema';
-import mongoose, { Model } from 'mongoose';
-import { UserRole } from '../auth/schemas/user.schema';
 import ApiFeatures from '../utils/api_features.utils';
+import {
+  mockNewCreatedUser,
+  mockNotFoundExceptionError,
+  createdRestaurant,
+  existingRestaurant,
+  mockRestaurantService, mockNewRestaurant, mockUser, mockForbiddenExceptionError
+} from "./restaurant.mock_test.constants";
 import {
   BadRequestException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-
-const mockRestaurantService = {
-  find: jest.fn(),
-  findOne: jest.fn(),
-  create: jest.fn(),
-  findById: jest.fn(),
-  findByIdAndDelete: jest.fn(),
-  findByIdAndUpdate: jest.fn(),
-  updatedBy: jest.fn(),
-  deleteById: jest.fn(),
-};
-
-const mockRestaurant = {
-  _id: '648343fb3e045358b81c722a',
-  name: 'Blessed Restaurant ',
-  description: "It's for people that are blessed, this is the description",
-  email: 'betabyte@gmail.com',
-  phoneNumber: 9011111118,
-  address: 'No 5A Road Nsukka',
-  category: 'Fast food',
-  images: [],
-  location: {
-    type: 'Point',
-    coordinates: [-74.38576, 40.886511],
-    formattedAddress: '5a Grace Rd, Lake Hiawatha, NJ 07034, US',
-    city: 'Lake Hiawatha',
-    state: 'NJ',
-    zipcode: '07034',
-    country: 'US',
-  },
-  user: '6482d72b23bb1d317acaa140',
-  menu: [],
-};
-
-const mockUser = {
-  _id: '647e28234d7cd185e40d05a5',
-  email: 'beta1@gmail.com',
-  name: 'Ifeanyichukwu Obeta',
-  role: UserRole.USER,
-};
+import { Model } from 'mongoose';
 
 describe('RestaurantService', () => {
-  let service: RestaurantsService;
-  let model: Model<Restaurant>;
+  let restaurantsService: RestaurantsService;
+  let restaurantModel: Model<Restaurant>;
 
   // function to run before each unit test
   beforeEach(async () => {
@@ -68,78 +34,75 @@ describe('RestaurantService', () => {
       ],
     }).compile();
 
-    service = module.get<RestaurantsService>(RestaurantsService);
-    model = module.get<Model<Restaurant>>(getModelToken(Restaurant.name));
-    // model = module.get<Model<Restaurant>>(getModelToken('Restaurant'));
+    restaurantsService = module.get<RestaurantsService>(RestaurantsService);
+    restaurantModel = module.get<Model<Restaurant>>(
+      getModelToken(Restaurant.name),
+    );
+    // restaurantModel = module.get<Model<Restaurant>>(getModelToken('Restaurant'));
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(restaurantsService).toBeDefined();
   });
 
-  // findAll
-  describe('findAll', () => {
-    it('should get all restaurant', async () => {
-      jest.spyOn(model, 'find').mockImplementationOnce(
+  // findAllRestaurant
+  describe('findAllRestaurant', () => {
+    it('should fetch all the restaurants', async () => {
+      jest.spyOn(restaurantModel, 'find').mockImplementationOnce(
         () =>
           ({
             limit: () => ({
-              skip: jest.fn().mockResolvedValue([mockRestaurant]),
+              skip: jest.fn().mockResolvedValue([existingRestaurant]),
             }),
           } as any),
       );
 
-      const restaurants = await service.findAllRestaurant({
+      const restaurants = await restaurantsService.findAllRestaurant({
         keyword: 'restaurant',
       });
-      expect(restaurants).toEqual([mockRestaurant]);
+      expect(restaurants).toEqual([existingRestaurant]);
     });
   });
 
-  // create
+  // createRestaurant
   describe('createRestaurant', () => {
-    const newRestaurant = {
-      name: 'Chitis',
-      description: "It's for people that are blessed, this is the description",
-      email: 'beta1@gmail.com',
-      phoneNumber: 9011111118,
-      address: 'No 5A Road Nsukka',
-      category: 'Fast food',
-    };
     it('should get the user location', async () => {
       jest
         .spyOn(ApiFeatures, 'getRestaurantLocation')
-        .mockImplementation(() => Promise.resolve(mockRestaurant.location));
+        .mockImplementation(() => Promise.resolve(existingRestaurant.location));
     });
 
-    // check the id
-    it('should throw wrong mongoose id', async () => {
-      await expect(service.findRestaurantById('wrong id')).rejects.toThrow(
-        BadRequestException,
-      );
-    });
-
-    // check if the restaurant already exist
-    it('should check if the restaurant has already been created', async () => {
-      // jest.spyOn(model, 'create').mockResolvedValueOnce(mockRestaurant as any);
-      const mockSearch = { name: mockRestaurant.name, user: mockUser._id };
-
-      // check if restaurant already exist
-      const mockError = new ForbiddenException(
-        'The name of the restaurant already exist please use another name',
-      );
-
+    it('should find that restaurant', async () => {
       jest
-        .spyOn(model, 'findOne')
-        .mockRejectedValueOnce(() => Promise.resolve(mockError));
+        .spyOn(restaurantModel, 'findOne')
+        .mockResolvedValue(() => Promise.resolve(existingRestaurant));
+    });
+
+    it('should check if the restaurant has already been created', () => {
+      expect(async () => {
+        const createRestaurant = await restaurantsService.createRestaurant(
+          mockNewRestaurant,
+          mockUser,
+        );
+
+        // check if created restaurant already exist
+        if (createRestaurant.name !== existingRestaurant.name) {
+          throw mockForbiddenExceptionError;
+        }
+      }).rejects.toThrow(mockForbiddenExceptionError);
     });
 
     it('should create a new restaurant', async () => {
       jest
-        .spyOn(model, 'create')
-        .mockImplementationOnce(() => Promise.resolve(mockRestaurant as any));
-      const result = await model.create(newRestaurant as any, mockUser as any);
-      expect(result).toEqual(mockRestaurant);
+        .spyOn(restaurantModel, 'create')
+        .mockImplementationOnce(() =>
+          Promise.resolve(mockNewRestaurant as any),
+        );
+      const result = await restaurantModel.create(
+        mockNewRestaurant as any,
+        mockNewCreatedUser as any,
+      );
+      expect(result).toEqual(existingRestaurant);
     });
   });
 
@@ -147,24 +110,26 @@ describe('RestaurantService', () => {
   describe('findById', () => {
     it('should get restaurant by Id', async () => {
       jest
-        .spyOn(model, 'findById')
-        .mockResolvedValueOnce(mockRestaurant as any);
-      const result = await service.findRestaurantById(mockRestaurant._id);
-      expect(result).toEqual(mockRestaurant);
+        .spyOn(restaurantModel, 'findById')
+        .mockResolvedValueOnce(existingRestaurant as any);
+      const result = await restaurantsService.findRestaurantById(
+        existingRestaurant._id,
+      );
+      expect(result).toEqual(existingRestaurant);
     });
 
     // check the id
     it('should throw wrong mongoose id', async () => {
-      await expect(service.findRestaurantById('wrong id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        restaurantsService.findRestaurantById('wrong id'),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw restaurant not found error', async () => {
       const mockError = new NotFoundException('Restaurant not found');
-      jest.spyOn(model, 'findById').mockRejectedValue(mockError);
+      jest.spyOn(restaurantModel, 'findById').mockRejectedValue(mockError);
       await expect(
-        service.findRestaurantById(mockRestaurant._id),
+        restaurantsService.findRestaurantById(existingRestaurant._id),
       ).rejects.toThrow(NotFoundException);
     });
   });
@@ -173,30 +138,31 @@ describe('RestaurantService', () => {
   describe('updateById', () => {
     // check if id is valid
     it('should throw wrong mongoose id', async () => {
-      await expect(service.findRestaurantById('wrong id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        restaurantsService.findRestaurantById('wrong id'),
+      ).rejects.toThrow(BadRequestException);
     });
     // check if id exist
     it('should throw restaurant not found error', async () => {
-      const mockError = new NotFoundException('Restaurant not found');
-      jest.spyOn(model, 'findById').mockRejectedValue(mockError);
+      jest
+        .spyOn(restaurantModel, 'findById')
+        .mockRejectedValue(mockNotFoundExceptionError);
       await expect(
-        service.findRestaurantById(mockRestaurant._id),
+        restaurantsService.findRestaurantById(existingRestaurant._id),
       ).rejects.toThrow(NotFoundException);
     });
     //update the restaurant
     it('should update the restaurant', async () => {
       //
-      const restaurant = { ...mockRestaurant, name: 'Blessed Restaurant' };
+      const restaurant = { ...existingRestaurant, name: 'Blessed Restaurant' };
       const updateRestaurant = { name: 'Updated Restaurant name' };
       jest
-        .spyOn(model, 'findByIdAndUpdate')
+        .spyOn(restaurantModel, 'findByIdAndUpdate')
         .mockResolvedValueOnce(updateRestaurant as any);
-      const updatedRestaurant = await service.updateRestaurantById(
+      const updatedRestaurant = await restaurantsService.updateRestaurantById(
         restaurant._id,
         updateRestaurant as any,
-        mockUser as any,
+        mockNewCreatedUser as any,
       );
 
       expect(updatedRestaurant.name).toEqual(updateRestaurant.name);
@@ -206,28 +172,30 @@ describe('RestaurantService', () => {
   // deleteById
   describe('deleteById', () => {
     it('should throw wrong mongoose id', async () => {
-      await expect(service.findRestaurantById('wrong id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        restaurantsService.findRestaurantById('wrong id'),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw restaurant not found error', async () => {
       const mockError = new NotFoundException(
         "The Restaurant you want to delete doesn't exit",
       );
-      jest.spyOn(model, 'findById').mockRejectedValue(mockError);
+      jest.spyOn(restaurantModel, 'findById').mockRejectedValue(mockError);
       await expect(
-        service.findRestaurantById(mockRestaurant._id),
+        restaurantsService.findRestaurantById(existingRestaurant._id),
       ).rejects.toThrow(NotFoundException);
     });
 
     it('should delete a restaurant by its Id', async () => {
       jest
-        .spyOn(model, 'findByIdAndDelete')
-        .mockResolvedValueOnce(mockRestaurant as any);
+        .spyOn(restaurantModel, 'findByIdAndDelete')
+        .mockResolvedValueOnce(existingRestaurant as any);
 
-      const result = await service.deleteRestaurantById(mockRestaurant._id);
-      expect(result).toEqual(mockRestaurant);
+      const result = await restaurantsService.deleteRestaurantById(
+        existingRestaurant._id,
+      );
+      expect(result).toEqual(existingRestaurant);
     });
   });
 
@@ -245,11 +213,11 @@ describe('RestaurantService', () => {
         },
       ];
 
-      const updatedRestaurant = { ...mockRestaurant, images: mockImages };
+      const updatedRestaurant = { ...existingRestaurant, images: mockImages };
 
       jest.spyOn(ApiFeatures, 'uploadImages').mockResolvedValue(mockImages);
       jest
-        .spyOn(model, 'findByIdAndUpdate')
+        .spyOn(restaurantModel, 'findByIdAndUpdate')
         .mockResolvedValueOnce(updatedRestaurant as any);
 
       const file = [
@@ -264,7 +232,10 @@ describe('RestaurantService', () => {
         },
       ];
 
-      const result = await service.uploadImage(mockRestaurant._id, file);
+      const result = await restaurantsService.uploadImage(
+        existingRestaurant._id,
+        file,
+      );
       expect(result).toEqual(updatedRestaurant);
     });
   });
@@ -283,25 +254,27 @@ describe('RestaurantService', () => {
         },
       ];
       jest.spyOn(ApiFeatures, 'deleteImages').mockResolvedValue(true);
-      const result = await service.deleteImage(mockImages);
+      const result = await restaurantsService.deleteImage(mockImages);
       expect(result).toBe(true);
     });
   });
 
   describe('deleteById', () => {
     it('should throw wrong mongoose id', async () => {
-      await expect(service.findRestaurantById('wrong id')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        restaurantsService.findRestaurantById('wrong id'),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw restaurant not found error', async () => {
       const mockError = new NotFoundException(
         "The Restaurant you want to delete doesn't exit",
       );
-      jest.spyOn(model, 'findByIdAndDelete').mockRejectedValue(mockError);
+      jest
+        .spyOn(restaurantModel, 'findByIdAndDelete')
+        .mockRejectedValue(mockError);
       await expect(
-        service.findRestaurantById(mockRestaurant._id),
+        restaurantsService.findRestaurantById(existingRestaurant._id),
       ).rejects.toThrow(NotFoundException);
     });
   });

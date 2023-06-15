@@ -83,6 +83,11 @@ export class RestaurantsService {
       name: restaurant.name,
       user: user.id,
     });
+    console.log(``);
+    console.log(
+      `The value of restaurantName exist is:   => ${restaurantNameExist}`,
+    );
+    console.log('');
 
     if (restaurantNameExist && user.email === restaurantNameExist.email) {
       throw new ForbiddenException(
