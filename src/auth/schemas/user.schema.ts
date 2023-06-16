@@ -25,3 +25,17 @@ export class User extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+interface SerializedUser {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+}
+
+UserSchema.set('toJSON', {
+  transform: (_, ret) => {
+    const { __v, ...rest } = ret;
+    return rest as SerializedUser;
+  },
+});

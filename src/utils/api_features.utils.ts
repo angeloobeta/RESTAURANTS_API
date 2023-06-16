@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { S3 } from 'aws-sdk';
+import { S3Client } from '@aws-sdk/client-s3';
 
 const nodeGeoCoder = require('node-geocoder');
 import { Location } from '../restaurants/schemas/restaurants.schema';
@@ -68,6 +69,7 @@ export default class ApiFeatures {
       const s3Bucket = new S3({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_KEY,
+        region: 'AWS_S3_REGION',
       });
 
       const images = [];
