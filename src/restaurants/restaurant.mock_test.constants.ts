@@ -26,7 +26,6 @@ export const existingRestaurant = {
   phoneNumber: 9011111118,
   address: 'No 5A Road Nsukka',
   category: Category.FAST_FOOD,
-  images: [],
   location: {
     type: 'Point',
     coordinates: [-74.38576, 40.886511],
@@ -37,7 +36,6 @@ export const existingRestaurant = {
     country: 'US',
   },
   user: mockNewCreatedUser,
-  menu: [],
 };
 
 // instance of create restaurant
